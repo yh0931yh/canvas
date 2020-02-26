@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas-时钟动画</title>
+</head>
+<body>
+<canvas id="clock" width="200" height="200">
+    canvans上一个正常运作的时钟
+</canvas>
+<script>
+
+    const cCanvas=document.getElementById("clock")
+    const ctx=cCanvas.getContext("2d");
+    const r=cCanvas.width/2
+    initClock()
+    setInterval(initClock,1000)
+
+    function drawClockBackground() {
+        ctx.clearRect(0,0,cCanvas.width,cCanvas.height) //清除画布，为了使动画不重叠
+        ctx.lineWidth=10
+        ctx.strokeStyle="green"
+        ctx.save()
+        ctx.beginPath() //绘制时钟外圆
+        ctx.translate(r,r)
+        ctx.arc(0,0,r-5,0,2*Math.PI,true)
+        ctx.stroke()
+
+        ctx.beginPath()//绘制时钟的数字
+        ctx.font="18px Arial"
+        ctx.textAlign="center"
+        ctx.textBaseline="middle"
+        const colorNum=[3,4,5,6,7,8,9,10,11,12,1,2] //根据canvas坐标轴定
+        colorNum.forEach((item,index)=>{
+            ctx.fillText(`${item}`,(r-20)*Math.cos(2*Math.PI/12*index),(r-20)*Math.sin(2*Math.PI/12*index))
+        })
+        ctx.fill();
+    }
+    function drawHour(hour,minute) {//绘制时针
+        ctx.save()
+        ctx.beginPath()
+        let deg=2*Math.PI/12*(hour+minute/60)
+        ctx.rotate(deg)  //一定要放在moveto的前面
+        ctx.moveTo(0,5)
+        ctx.lineTo(0,-r/2+5)
+        ctx.strokeStyle="purple"
+        ctx.lineCap="round"
+        ctx.stroke();
+        ctx.restore()
+    }
+    function drawMinute(minute) {//绘制分针
+        ctx.save()
+        ctx.beginPath()
+        let deg=2*Math.PI/60*minute
+        ctx.rotate(deg)  //一定要放在moveto的前面
+        ctx.moveTo(0,5)
+        ctx.lineTo(0,-r/2-10)
+        ctx.lineCap="round"
+        ctx.lineWidth=7
+        ctx.strokeStyle="orange"
+        ctx.stroke();
+        ctx.restore()
+    }
+    function drawSecond(second) {//绘制秒针
+        ctx.save()
+        ctx.beginPath()
+        let deg=2*Math.PI/60*second
+        ctx.rotate(deg)  //一定要放在moveto的前面
+        ctx.moveTo(4,7)
+        ctx.lineTo(-4,7)
+        ctx.lineTo(0,-r/2-25)
+        ctx.fillStyle="red"
+        ctx.fill();
+        ctx.restore()
+    }
+    function drawMiddleCircle() { //绘制时针的中心点
+        ctx.beginPath()
+        ctx.arc(0,0,7,0,2*Math.PI)
+        ctx.fillStyle="white"
+        ctx.fill();
+        ctx.restore()  //和最前面画时钟背景对应，主要是为了translate函数不影响动画绘制
+    }
+    function initClock() {
+        let nowTime= new Date();
+        let hour=nowTime.getHours();
+        let minute=nowTime.getMinutes()
+        let second=nowTime.getSeconds()
+        drawClockBackground()
+        drawHour(hour,minute)
+        drawMinute(minute)
+        drawSecond(second)
+        drawMiddleCircle()
+    }
+</script>
+</body>
+</html>

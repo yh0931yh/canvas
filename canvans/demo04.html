@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas-简单小球动画</title>
+</head>
+<body>
+<canvas id="myCanvas" width="400" height="400">
+    显示canvas上面一个小球上下来回运动
+</canvas>
+<script>
+    const canvas=document.getElementById("myCanvas")
+    const ctx=canvas.getContext("2d")
+    const width=canvas.width
+    const height=canvas.height
+    let direct=1
+    let y=30
+    ctx.lineWidth=5
+    ctx.strokeStyle="pink"
+    ctx.strokeRect(0,0,width,height)
+    init()
+    setInterval(function () {
+        ctx.clearRect(0,0,width,height) //清除动画
+        ctx.strokeRect(0,0,width,height)
+        ctx.beginPath()
+
+         y=y+20*direct
+        if(y+30>=400){
+            y=370
+            direct=-1
+        }
+        else if(y-30<=0){
+            y=30
+            direct=1
+        }
+
+        ctx.arc(200,y,30,0,2*Math.PI,true)
+        ctx.fillStyle="rgba(138,43,226,0.6)"
+        ctx.fill()
+    },500)
+   function init() {
+       ctx.beginPath()
+       ctx.arc(200,y,30,0,2*Math.PI,true)
+       ctx.fillStyle="rgba(138,43,226,0.6)"
+       ctx.fill()
+   }
+</script>
+</body>
+</html>

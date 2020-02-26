@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas基础</title>
+</head>
+<body>
+   <canvas id="myCanvas" width="1200" height="900">
+       里面绘制了直线，矩形，圆形
+   </canvas>
+
+   <canvas id="changeCanvas" width="1200" height="900">
+   </canvas>
+<script>
+    const canvas=document.getElementById("myCanvas")
+    const width=canvas.width
+    const height=canvas.height
+    const ctx=canvas.getContext("2d")
+
+    ctx.strokeStyle="pink"
+    ctx.lineWidth=10
+    ctx.fillStyle="#ccc"
+    ctx.fillRect(0,0,width,height)
+    ctx.strokeRect(0,0,width,height)
+
+    //每次绘制图形的时记得加上beginPath()函数，提高性能，避免重复绘制
+    //绘制直线
+    ctx.beginPath()
+    ctx.moveTo(100,100)
+    ctx.lineTo(200,200)
+    ctx.lineTo(200,100)
+    ctx.lineWidth=5
+    ctx.strokeStyle="black"
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.moveTo(100,300)
+    ctx.lineTo(200,400)
+    ctx.lineTo(200,300)
+    ctx.lineWidth=5
+    ctx.strokeStyle="red"
+    ctx.closePath()
+    ctx.stroke()
+    // ctx.fillStyle="yellow"
+    // ctx.fill()
+
+    ctx.beginPath()
+    ctx.moveTo(100,500)
+    ctx.lineTo(200,600)
+    ctx.lineTo(200,500)
+    ctx.lineJoin="bevel"
+    ctx.lineCap="round"
+    ctx.lineWidth=5
+    ctx.strokeStyle="purple"
+    ctx.fillStyle="yellow"
+    ctx.fill()
+    ctx.stroke()
+
+    //绘制矩形
+    ctx.lineJoin="miter"
+    ctx.strokeStyle="black"
+
+    var lgrd=ctx.createLinearGradient(300,300,500,400)
+    lgrd.addColorStop(0,"yellow")
+    lgrd.addColorStop(1,"blue");
+    ctx.fillStyle=lgrd
+    ctx.beginPath()
+    ctx.rect(300,100,200,100)
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.rect(300,300,200,100)
+    ctx.fill()
+
+    ctx.fillStyle="green"
+    ctx.fillRect(300,500,200,100) //直接绘制填充的矩形
+
+    ctx.strokeStyle="orange"
+    ctx.strokeRect(300,700,200,100) //直接绘制描边的矩形
+
+    ctx.clearRect(300,700,200,100) //清除矩形里面的像素，做动画时一定会用到
+
+    //绘制弧形
+    ctx.beginPath()
+    ctx.arc(600,100,40,0,3*Math.PI/2)
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.arc(600,200,40,0,3*Math.PI/2)
+    ctx.fill()
+
+    ctx.beginPath()
+    ctx.arc(600,300,40,0,3*Math.PI/2,true)
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.arc(600,400,40,0,3*Math.PI/2,true)
+    ctx.fill()
+
+    ctx.beginPath()
+    ctx.arc(600,500,40,0,2*Math.PI,true)
+    ctx.fill()
+
+    //绘制图片
+    let img=new Image()
+    img.src="./img/01.jpg"
+    img.onload=function () {
+        ctx.drawImage(img,700,100,300,300)
+    }
+
+    let img2=new Image()
+    img2.src="./img/02.jpg"
+    img2.onload=function () {
+        ctx.drawImage(img2,200,200,300,300,700,500,300,300) //在原图上剪切一定大小的图片然后绘制
+    }
+
+    //绘制文本
+    let grd=ctx.createRadialGradient(1050,100,0,1050,100,100) //径向渐变
+    grd.addColorStop(0,'red')
+    grd.addColorStop(1,'purple')
+    ctx.fillStyle=grd
+    ctx.shadowBlur=10;
+    ctx.shadowOffsetX=20;
+    ctx.shadowOffsetY=20;
+    ctx.shadowColor="black";
+    ctx.font="40px Georgia"
+    ctx.fillText("hello",1050,100)
+
+    ctx.lineWidth=2
+    ctx.strokeText("world",1050,300)
+
+    //图形转换  记得加上save(),restore()，每次转换之后不会影响后面的转换
+    const mycanvas=document.getElementById("changeCanvas")
+    const mywidth=mycanvas.width
+    const myheight=mycanvas.height
+    const myCtx=mycanvas.getContext("2d")
+    //scale  加save(),restore()缩放没有叠加；缩放了矩形的大小，边框的大小，偏移位置
+    myCtx.lineJoin="miter"
+    myCtx.strokeStyle="black"
+    myCtx.fillStyle="blue"
+    myCtx.save()
+    myCtx.beginPath()
+    myCtx.scale(1,1)
+    myCtx.rect(10,10,200,100)
+    myCtx.stroke()
+    myCtx.restore()
+
+    myCtx.save()
+    myCtx.beginPath()
+    myCtx.scale(2,2)
+    myCtx.rect(10,10,200,100)
+    myCtx.stroke()
+    myCtx.restore()
+
+    myCtx.save()
+    myCtx.beginPath()
+    myCtx.scale(3,3)
+    myCtx.rect(10,10,200,100)
+    myCtx.stroke()
+    myCtx.restore()
+
+   //tranlate 偏移不加save(),restore()，偏移是叠加的
+    myCtx.lineWidth=8
+    myCtx.strokeStyle="green"
+    myCtx.beginPath()
+    myCtx.moveTo(10,400)
+    myCtx.lineTo(20,500)
+    myCtx.stroke()
+
+    myCtx.beginPath()
+    myCtx.translate(100,100)
+    myCtx.moveTo(10,400)
+    myCtx.lineTo(20,500)
+    myCtx.stroke()
+
+    myCtx.beginPath()
+    myCtx.translate(20,20)
+    myCtx.moveTo(10,400)
+    myCtx.lineTo(20,500)
+    myCtx.stroke()
+  //
+
+</script>
+</body>
+</html>
